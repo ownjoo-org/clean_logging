@@ -1,13 +1,12 @@
 import argparse
 import logging
-from logging import DEBUG, getLogger, StreamHandler, Formatter
 from typing import Optional
 
-logging.basicConfig(level=DEBUG)
-log = getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger(__name__)
 
 
-class Sanitizer(Formatter):
+class Sanitizer(logging.Formatter):
     def __init__(self, *args, filter_vals: Optional[list] = None, **kwargs):
         super().__init__(*args, **kwargs)
         self._filter_vals = filter_vals or []
@@ -19,13 +18,13 @@ class Sanitizer(Formatter):
         return result
 
     def format(self, record):
-        original = Formatter.format(self, record)
+        original = logging.Formatter.format(self, record)
         return self._sanitize(original)
 
 
 def configure_logging():
-    sh = StreamHandler()
-    sh.setLevel(DEBUG)
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.DEBUG)
     log.addHandler(sh)
     log.propagate = False
 
@@ -58,7 +57,6 @@ if __name__ == '__main__':
     clargs = parser.parse_args()
 
     if data := main(clargs.value):
-        pass
-        # print(data)
+        print(data)
     else:
         print('No result')
